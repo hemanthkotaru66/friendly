@@ -1,0 +1,517 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FRIENDLY - AI Companion</title>
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:Arial,sans-serif}
+html{scroll-behavior:smooth}
+body{background:#f7f8fc;color:#182033}
+button{cursor:pointer}
+header{height:75px;background:#101426;display:flex;align-items:center;justify-content:space-between;padding:0 6%;position:sticky;top:0;z-index:10}
+.logo{font-size:25px;font-weight:bold;color:#ff7180;letter-spacing:2px}
+nav{display:flex;gap:22px;align-items:center}
+nav a{color:white;text-decoration:none;font-weight:bold}
+nav .login-btn,.primary,.full-btn,.persona{background:linear-gradient(90deg,#713ce5,#e54c91);color:white;border:0;border-radius:25px;padding:13px 22px;font-weight:bold}
+.hero{min-height:600px;background:linear-gradient(135deg,#101426,#29204c);color:white;display:flex;align-items:center;justify-content:space-between;padding:60px 8%;gap:30px}
+.hero-content{max-width:550px}
+.hero h1{font-size:clamp(38px,5vw,60px);margin-bottom:24px;line-height:1.15}
+.hero h1 span{color:#ff7180}
+.hero p{font-size:18px;line-height:1.7;color:#d0d0df;margin-bottom:28px}
+.buttons{display:flex;gap:12px;flex-wrap:wrap}
+.secondary{padding:13px 22px;border:2px solid #ff7180;background:transparent;color:white;border-radius:25px}
+.hero-image{font-size:clamp(130px,24vw,260px);animation:float 4s ease-in-out infinite;filter:drop-shadow(0 25px 20px #0005)}
+@keyframes float{50%{transform:translateY(-18px) rotateY(10deg)}}
+.trust{text-align:center;padding:32px 10px;background:white}
+.trust-list{display:flex;justify-content:center;gap:35px;flex-wrap:wrap;margin-top:18px;color:#6c4cff;font-weight:bold}
+.features,.about{padding:75px 8%;text-align:center}
+.title{font-size:36px;margin-bottom:14px}
+.subtitle{color:#666;margin-bottom:35px}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
+.card{padding:30px 22px;background:white;border-radius:20px;box-shadow:0 8px 28px #0000000c;transition:.25s}
+.card:hover{transform:translateY(-6px)}
+.card-icon{font-size:48px;margin-bottom:15px}
+.card p,.about p{color:#666;line-height:1.7;margin-top:12px}
+.about{background:white;display:flex;align-items:center;gap:45px;text-align:left}
+.about-image,.about-text{width:50%}
+.about-emoji{background:linear-gradient(135deg,#eeeaff,#ffe9f2);border-radius:25px;min-height:300px;display:grid;place-items:center;font-size:150px}
+.about h2{font-size:36px;margin-bottom:15px}
+.cta{text-align:center;padding:70px 20px;color:white;background:linear-gradient(135deg,#693ce5,#e64991)}
+.cta h2{font-size:36px;margin-bottom:18px}
+.cta button{margin-top:22px;padding:14px 28px;border:0;border-radius:25px;color:#673de3;font-weight:bold}
+footer{background:#101426;color:white;padding:40px 8%}
+footer p{color:#aaa;margin-top:12px;line-height:1.7}
+.copy{border-top:1px solid #333;margin-top:25px;padding-top:20px;color:#aaa}
+.popup{display:none;position:fixed;inset:0;background:#000b;z-index:100;align-items:center;justify-content:center;padding:15px}
+.box{width:100%;max-width:450px;max-height:90vh;overflow-y:auto;background:white;padding:30px;border-radius:22px;text-align:center}
+.box h2{margin-bottom:12px}
+.box p{color:#666;margin:12px 0}
+.input{width:100%;padding:13px;margin:7px 0;border:1px solid #ddd;border-radius:10px;font-size:15px}
+.full-btn,.guest,.close{width:100%;padding:13px;margin-top:10px;border-radius:25px;font-size:15px}
+.guest{border:2px solid #6c4cff;color:#6c4cff;background:white}
+.close{width:auto;background:#333;color:white;border:0;padding:10px 22px}
+.switch{margin-top:15px}
+.switch span{color:#6c4cff;font-weight:bold;cursor:pointer}
+.terms{text-align:left;font-size:13px;color:#666;margin-top:12px}
+.persona{width:100%;margin:5px 0;padding:13px}
+#conversationPage{display:none;position:fixed;inset:0;background:#f5f6fb;z-index:200;flex-direction:column}
+.chat-header{height:75px;background:white;display:flex;align-items:center;justify-content:space-between;padding:0 5%;box-shadow:0 2px 10px #0001}
+.chat-person{display:flex;align-items:center;gap:12px}
+.avatar{width:48px;height:48px;border-radius:50%;background:linear-gradient(135deg,#6c4cff,#e84c91);display:grid;place-items:center;font-size:27px}
+.online{font-size:12px;color:#22a447;margin-top:4px}
+.end-btn{background:#e53935;color:white;border:0;padding:11px 15px;border-radius:20px}
+.chat-messages{flex:1;overflow-y:auto;padding:25px 7%}
+.message{display:flex;margin-bottom:15px}
+.message-content{max-width:80%;padding:13px 17px;border-radius:18px;line-height:1.5;overflow-wrap:anywhere;white-space:pre-wrap}
+.ai{background:white;box-shadow:0 3px 12px #0000000a;border-top-left-radius:4px}
+.user{margin-left:auto;background:linear-gradient(90deg,#713ce5,#e54c91);color:white;border-top-right-radius:4px}
+.chat-input-area{display:flex;gap:10px;background:white;padding:15px 5%;box-shadow:0 -2px 10px #0001}
+.message-input{flex:1;min-width:0;border:1px solid #ddd;border-radius:30px;padding:13px 17px;font-size:16px}
+.voice-btn,.send-btn{width:48px;height:48px;border:0;border-radius:50%;font-size:20px}
+.voice-btn{background:#eeeaff}
+.send-btn{background:linear-gradient(135deg,#713ce5,#e54c91);color:white}
+@media(max-width:800px){
+header{padding:0 15px}nav{gap:10px}nav a:not(.login-btn){display:none}
+.hero{flex-direction:column;text-align:center;padding:55px 7%}
+.buttons{justify-content:center}.hero-image{margin-top:15px}
+.grid{grid-template-columns:1fr}
+.about{flex-direction:column;text-align:center}
+.about-image,.about-text{width:100%}
+.about-emoji{min-height:250px;font-size:120px}
+.chat-messages{padding:20px 4%}
+.chat-input-area{padding:12px}
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <div class="logo">🤝 FRIENDLY</div>
+  <nav>
+    <a href="#home">Home</a>
+    <a href="#about">About</a>
+    <a href="#services">Services</a>
+    <a href="#contact">Contact</a>
+    <a href="#" class="login-btn" onclick="openStart();return false">Start</a>
+  </nav>
+</header>
+
+<section class="hero" id="home">
+  <div class="hero-content">
+    <h1>Your People.<br>Your <span>Connection.</span></h1>
+    <p>Talk, connect and share your thoughts with personalized AI friends.</p>
+    <div class="buttons">
+      <button class="primary" onclick="openStart()">Start Conversation</button>
+      <button class="secondary" onclick="document.getElementById('about').scrollIntoView()">Learn More</button>
+    </div>
+  </div>
+  <div class="hero-image">🤗</div>
+</section>
+
+<section class="trust">
+  <h3>A new way to stay connected</h3>
+  <div class="trust-list">
+    <span>❤️ FRIENDSHIP</span><span>🎙️ VOICE</span>
+    <span>💬 CHAT</span><span>🤖 AI</span>
+  </div>
+</section>
+
+<section class="features" id="services">
+  <h2 class="title">FRIENDLY Features</h2>
+  <p class="subtitle">Connect, talk and spend time with your AI friends.</p>
+  <div class="grid">
+    <div class="card"><div class="card-icon">🎙️</div><h3>Voice Conversation</h3><p>Use your voice to send messages to your companion.</p></div>
+    <div class="card"><div class="card-icon">❤️</div><h3>Emotional Support</h3><p>Share your thoughts in a comfortable environment.</p></div>
+    <div class="card"><div class="card-icon">🤝</div><h3>Friend Personas</h3><p>Choose Mother, Father, Brother, Sister, Friend or Mentor.</p></div>
+  </div>
+</section>
+
+<section class="about" id="about">
+  <div class="about-image"><div class="about-emoji">🧑‍🤝‍🧑</div></div>
+  <div class="about-text">
+    <h2>More Than Just AI</h2>
+    <p>FRIENDLY creates a comfortable place where you can talk, connect and feel heard.</p>
+    <p>Choose your preferred AI friend and start a conversation whenever you need it.</p>
+    <br><button class="primary" onclick="openStart()">Enter FRIENDLY</button>
+  </div>
+</section>
+
+<section class="cta" id="contact">
+  <h2>Welcome to FRIENDLY ❤️</h2>
+  <p>Create your account and start your conversation.</p>
+  <button onclick="openStart()">Start Conversation</button>
+</section>
+
+<footer>
+  <h2>🤝 FRIENDLY</h2>
+  <p>Your personal AI friendship conversation platform.</p>
+  <div class="copy">© 2026 FRIENDLY. All Rights Reserved.</div>
+</footer>
+
+<!-- START -->
+<div class="popup" id="startPopup">
+  <div class="box">
+    <h2>Welcome to FRIENDLY ❤️</h2>
+    <p>Create an account or continue as a guest.</p>
+    <button class="full-btn" onclick="showSignup()">📝 Sign Up</button>
+    <button class="full-btn" onclick="showLogin()">🔐 Sign In</button>
+    <button class="guest" onclick="guestLogin()">👤 Continue as Guest</button>
+    <button class="close" onclick="closePopups()">Close</button>
+  </div>
+</div>
+
+<!-- SIGN UP -->
+<div class="popup" id="signupPopup">
+  <div class="box">
+    <h2>📝 Create Your Account</h2>
+    <p>Enter your details below.</p>
+    <form id="signupForm">
+      <input class="input" id="name" placeholder="Full Name" required maxlength="80">
+      <input class="input" id="email" type="email" placeholder="Email Address" required>
+      <input class="input" id="phone" type="tel" placeholder="Mobile Number" required>
+      <input class="input" id="password" type="password" placeholder="Create Password (minimum 6 characters)" minlength="6" required>
+      <input class="input" id="confirmPassword" type="password" placeholder="Confirm Password" minlength="6" required>
+      <div class="terms"><label><input type="checkbox" id="terms" required> I agree to the Terms & Privacy Policy.</label></div>
+      <button class="full-btn" type="submit">Create Account</button>
+    </form>
+    <p class="switch">Already have an account? <span onclick="showLogin()">Sign In</span></p>
+    <button class="close" onclick="closePopups()">Cancel</button>
+  </div>
+</div>
+
+<!-- AFTER SIGN UP -->
+<div class="popup" id="afterSignupPopup">
+  <div class="box">
+    <h2>🎉 Account Created!</h2>
+    <p id="accountCreatedText">Your account has been created.</p>
+    <p>Please sign in to continue.</p>
+    <button class="full-btn" onclick="showLogin()">🔐 Sign In Now</button>
+    <button class="close" onclick="closePopups()">Close</button>
+  </div>
+</div>
+
+<!-- SIGN IN -->
+<div class="popup" id="loginPopup">
+  <div class="box">
+    <h2>🔐 Sign In</h2>
+    <p>Sign in to continue to FRIENDLY.</p>
+    <form id="loginForm">
+      <input class="input" id="loginEmail" type="email" placeholder="Email Address" required>
+      <input class="input" id="loginPassword" type="password" placeholder="Password" required>
+      <button class="full-btn" type="submit">Sign In & Continue</button>
+    </form>
+    <p class="switch">Don't have an account? <span onclick="showSignup()">Sign Up</span></p>
+    <button class="close" onclick="closePopups()">Cancel</button>
+  </div>
+</div>
+
+<!-- GUEST LIMIT -->
+<div class="popup" id="guestLimitPopup">
+  <div class="box">
+    <h2>🎁 Guest Chance Finished</h2>
+    <p>Your one free guest session has been used in this browser.</p>
+    <button class="full-btn" onclick="showSignup()">📝 Sign Up</button>
+    <button class="full-btn" onclick="showLogin()">🔐 Sign In</button>
+    <button class="close" onclick="closePopups()">Close</button>
+  </div>
+</div>
+
+<!-- FRIEND SELECTION -->
+<div class="popup" id="familyPopup">
+  <div class="box">
+    <h2>🤝 Choose Your FRIEND</h2>
+    <p>Who would you like to talk with?</p>
+    <button class="persona" onclick="startConversation('Mother','👩')">👩 Mother</button>
+    <button class="persona" onclick="startConversation('Father','👨')">👨 Father</button>
+    <button class="persona" onclick="startConversation('Brother','👦')">👦 Brother</button>
+    <button class="persona" onclick="startConversation('Sister','👧')">👧 Sister</button>
+    <button class="persona" onclick="startConversation('Friend','🧑')">🧑 Friend</button>
+    <button class="persona" onclick="startConversation('Mentor','👨‍🏫')">👨‍🏫 Mentor</button>
+    <button class="close" onclick="closePopups()">Back</button>
+  </div>
+</div>
+
+<!-- CHAT -->
+<div id="conversationPage">
+  <div class="chat-header">
+    <div class="chat-person">
+      <div class="avatar" id="chatAvatar">🧑</div>
+      <div><h3 id="chatMember">Friend</h3><div class="online">● Online</div></div>
+    </div>
+    <button class="end-btn" onclick="endConversation()">End Chat</button>
+  </div>
+  <div class="chat-messages" id="chatMessages" aria-live="polite"></div>
+  <div class="chat-input-area">
+    <button class="voice-btn" onclick="voiceMessage()" aria-label="Voice input">🎙️</button>
+    <input class="message-input" id="messageInput" placeholder="Type your message..." autocomplete="off">
+    <button class="send-btn" onclick="sendMessage()" aria-label="Send message">➤</button>
+  </div>
+</div>
+
+<script>
+"use strict";
+
+let currentUser = null;
+let currentMember = null;
+let guestUsed = localStorage.getItem("friendlyGuest") === "true";
+
+const $ = id => document.getElementById(id);
+
+function closePopups() {
+  document.querySelectorAll(".popup").forEach(p => p.style.display = "none");
+}
+
+function openStart() {
+  closePopups();
+  $("startPopup").style.display = "flex";
+}
+
+function showSignup() {
+  closePopups();
+  $("signupPopup").style.display = "flex";
+}
+
+function showLogin() {
+  closePopups();
+  $("loginPopup").style.display = "flex";
+}
+
+function getUsers() {
+  try {
+    return JSON.parse(localStorage.getItem("friendlyUsers") || "{}");
+  } catch {
+    return {};
+  }
+}
+
+function createAccount(event) {
+  event.preventDefault();
+
+  const name = $("name").value.trim();
+  const email = $("email").value.trim().toLowerCase();
+  const phone = $("phone").value.trim();
+  const password = $("password").value;
+  const confirmPassword = $("confirmPassword").value;
+
+  if (password.length < 6) {
+    alert("Password must contain at least 6 characters.");
+    return;
+  }
+
+  if (password !== confirmPassword) {
+    alert("Passwords do not match.");
+    return;
+  }
+
+  const users = getUsers();
+
+  if (users[email]) {
+    alert("This email already has an account. Please sign in.");
+    showLogin();
+    return;
+  }
+
+  users[email] = { name, email, phone, password };
+
+  try {
+    localStorage.setItem("friendlyUsers", JSON.stringify(users));
+  } catch {
+    alert("Could not save your account in this browser.");
+    return;
+  }
+
+  $("signupForm").reset();
+  closePopups();
+  $("accountCreatedText").textContent =
+    "Account created successfully for " + name + " ❤️";
+  $("afterSignupPopup").style.display = "flex";
+}
+
+function login(event) {
+  event.preventDefault();
+
+  const email = $("loginEmail").value.trim().toLowerCase();
+  const password = $("loginPassword").value;
+  const users = getUsers();
+  const user = users[email];
+
+  if (!user || user.password !== password) {
+    alert("Incorrect email or password. Please try again.");
+    return;
+  }
+
+  currentUser = user;
+  $("loginForm").reset();
+  showFriends();
+}
+
+function guestLogin() {
+  if (guestUsed) {
+    closePopups();
+    $("guestLimitPopup").style.display = "flex";
+    return;
+  }
+
+  guestUsed = true;
+  localStorage.setItem("friendlyGuest", "true");
+  currentUser = { name: "Guest", email: "" };
+  showFriends();
+}
+
+function showFriends() {
+  closePopups();
+  $("familyPopup").style.display = "flex";
+}
+
+function startConversation(member, icon) {
+  closePopups();
+  currentMember = member;
+
+  $("chatMember").textContent = member;
+  $("chatAvatar").textContent = icon;
+  $("chatMessages").replaceChildren();
+  $("conversationPage").style.display = "flex";
+
+  addAIMessage("Hello " + (currentUser?.name || "Friend") + "! ❤️");
+  addAIMessage(getWelcomeMessage(member));
+  addAIMessage("How are you feeling today?");
+
+  $("messageInput").focus();
+}
+
+function getWelcomeMessage(member) {
+  const greetings = {
+    Mother: "I am your AI Mother. ❤️ Tell me about your day, feelings, studies or work.",
+    Father: "I am your AI Father. Tell me what is happening. We can think about it together.",
+    Brother: "Hey bro! 😎 Tell me what's going on. I'm listening.",
+    Sister: "Hey! 😊 You can talk to me about anything. What's happening?",
+    Friend: "Hey friend! 😊 Let's chat. Tell me what's on your mind.",
+    Mentor: "I am your AI Mentor. Tell me your goal or problem and we can work through it step by step."
+  };
+  return greetings[member] || greetings.Friend;
+}
+
+function addMessage(text, type) {
+  const row = document.createElement("div");
+  row.className = "message";
+
+  const content = document.createElement("div");
+  content.className = "message-content " + type;
+  content.textContent = text;
+
+  row.appendChild(content);
+  $("chatMessages").appendChild(row);
+  $("chatMessages").scrollTop = $("chatMessages").scrollHeight;
+}
+
+function addAIMessage(text) {
+  addMessage(text, "ai");
+}
+
+function addUserMessage(text) {
+  addMessage(text, "user");
+}
+
+function generateResponse(text) {
+  const msg = text.toLowerCase();
+
+  if (/\b(hi|hello|hey)\b/.test(msg))
+    return "Hello 😊 I'm happy to talk with you. How is your day going?";
+
+  if (/\b(sad|upset|lonely|worried)\b/.test(msg))
+    return "I'm sorry you're feeling this way. ❤️ You can tell me what happened. I'm listening.";
+
+  if (/\b(happy|good|great)\b/.test(msg))
+    return "That's wonderful! 😊 What made your day good?";
+
+  if (/\b(study|exam|learning)\b/.test(msg))
+    return "📚 Try breaking your studies into small goals and taking short breaks. What are you studying?";
+
+  if (/\b(job|work|career)\b/.test(msg))
+    return "Work can sometimes be stressful. Tell me what's happening, and we can think it through together.";
+
+  if (/\b(love|relationship)\b/.test(msg))
+    return "Relationships can bring many emotions. ❤️ What are you thinking about?";
+
+  if (/\b(thank|thanks)\b/.test(msg))
+    return "You're welcome! ❤️ I'm glad you shared that with me.";
+
+  const replies = {
+    Mother: "Dear ❤️ I'm listening. Tell me a little more about what is on your mind.",
+    Father: "Stay strong. Let's understand the situation first and then decide what to do.",
+    Brother: "Don't worry, bro 😎. Tell me more about what happened.",
+    Sister: "I'm listening 😊. Tell me a little more.",
+    Friend: "I'm here to chat with you! 😊 What happened next?",
+    Mentor: "Let's look at your situation step by step. What outcome would you like?"
+  };
+
+  return replies[currentMember] || replies.Friend;
+}
+
+function sendMessage() {
+  const input = $("messageInput");
+  const text = input.value.trim();
+
+  if (!text) return;
+
+  addUserMessage(text);
+  input.value = "";
+  input.focus();
+
+  window.setTimeout(() => {
+    if ($("conversationPage").style.display === "flex") {
+      addAIMessage(generateResponse(text));
+    }
+  }, 400);
+}
+
+function voiceMessage() {
+  const Recognition =
+    window.SpeechRecognition || window.webkitSpeechRecognition;
+
+  if (!Recognition) {
+    alert("Voice recognition is unavailable in this browser. Try an updated version of Google Chrome.");
+    return;
+  }
+
+  const recognition = new Recognition();
+  recognition.lang = "en-IN";
+  recognition.interimResults = false;
+  recognition.maxAlternatives = 1;
+
+  recognition.onresult = event => {
+    $("messageInput").value = event.results[0][0].transcript;
+    $("messageInput").focus();
+  };
+
+  recognition.onerror = () => {
+    alert("Voice input failed. Check your microphone permission and try again.");
+  };
+
+  recognition.start();
+}
+
+function endConversation() {
+  $("conversationPage").style.display = "none";
+  currentMember = null;
+  showFriends();
+}
+
+$("signupForm").addEventListener("submit", createAccount);
+$("loginForm").addEventListener("submit", login);
+
+$("messageInput").addEventListener("keydown", event => {
+  if (event.key === "Enter") sendMessage();
+});
+
+document.addEventListener("keydown", event => {
+  if (event.key === "Escape") closePopups();
+});
+</script>
+
+</body>
+</html>
